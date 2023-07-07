@@ -1,0 +1,104 @@
+1. tạo dữ liệu
+    !pip install fire
+    !python create_lmdb_dataset.py --inputPath data_train/Class05/train_data/ --gtFile data_train/Class05/train_data/train.txt --outputPath data_train/Class05/db_train/
+    !python create_lmdb_dataset.py --inputPath data_train/Class05/valid_data/ --gtFile data_train/Class05/valid_data/valid.txt --outputPath data_train/Class05/db_valid/
+
+    !python create_lmdb_dataset.py --inputPath data_train/Class08_5x6/train_data/ --gtFile data_train/Class08_5x6/train_data/train.txt --outputPath data_train/Class08_5x6/db_train/
+    !python create_lmdb_dataset.py --inputPath data_train/Class08_5x6/valid_data/ --gtFile data_train/Class08_5x6/valid_data/valid.txt --outputPath data_train/Class08_5x6/db_valid/
+
+    !python create_lmdb_dataset.py --inputPath data_train/Class08/train_data_resize/ --gtFile data_train/Class08/train_data_resize/train.txt --outputPath data_train/Class08/db_train_resize/
+    !python create_lmdb_dataset.py --inputPath data_train/Class08/valid_data_resize/ --gtFile data_train/Class08/valid_data_resize/valid.txt --outputPath data_train/Class08/db_valid_resize/
+
+2. train 
+CUDA_VISIBLE_DEVICES=1 python3 train.py --train_data data_train/bienso/BiensoxeVN/db_train/ --valid_data data_train/bienso/BiensoxeVN/db_train/ --select_data / --batch_ratio 1 --Transformation TPS --FeatureExtraction ResNet --SequenceModeling BiLSTM --Prediction Attn --imgH 120 --imgW 353 --manualSeed=$RANDOM  --sensitive --batch_size 32 --num_iter 200000 --valInterval 2000 --character "2359h1npz8a046fe7rcdbgmkxvtlsuyoi" --batch_max_length 10
+
+
+
+
+
+    !CUDA_VISIBLE_DEVICES=0 python3 train.py --train_data data_train/create_dulieu_anh_theo_so/db_train \
+    --valid_data data_train/create_dulieu_anh_theo_so/db_valid \
+    --select_data / --batch_ratio 1 \
+    --Transformation TPS --FeatureExtraction ResNet --SequenceModeling BiLSTM --Prediction Attn \
+    --TransformerModel=vitstr_tiny_patch16_224 --imgH 224 --imgW 224 \
+    --manualSeed=$RANDOM  --sensitive \
+    --isrand_aug --workers=-1 --scheduler \
+    --batch_size 32 \
+    --num_iter 6000 \
+    --valInterval 1 --batch_max_length=50
+hoặc :
+!CUDA_VISIBLE_DEVICES=0 python3 train.py --train_data data_train/Class08/db_train --valid_data data_train/Class08/db_valid --select_data / --batch_ratio 1 --Transformation TPS --FeatureExtraction ResNet --SequenceModeling BiLSTM --Prediction Attn --TransformerModel=vitstr_tiny_patch16_224 --imgH 224 --imgW 224 --manualSeed=$RANDOM  --sensitive --batch_size 32 --num_iter 100000 --valInterval 100 --batch_max_length=50
+
+
+CUDA_VISIBLE_DEVICES=0 python3 train.py --train_data data_train/Class08_5x6/db_train --valid_data data_train/Class08_5x6/db_valid --select_data / --batch_ratio 1 --Transformation TPS --FeatureExtraction ResNet --SequenceModeling BiLSTM --Prediction Attn --TransformerModel=vitstr_base_patch16_224 --imgH 64 --imgW 448 --manualSeed=$RANDOM  --sensitive --batch_size 32 --num_iter 500000 --valInterval 5000 --batch_max_length=66 --character "m63A7i804519OPRCD2@TYdSMwBFhZNsLbqktVEycvlgzQWoGKIxpneafX-urjJHU+=#^&!$"
+
+CUDA_VISIBLE_DEVICES=0 python3 train.py --train_data data_train/Class08_5x6/db_train --valid_data data_train/Class08_5x6/db_valid --select_data / --batch_ratio 1 --Transformation None --FeatureExtraction None --SequenceModeling None --Prediction None --Transformer --TransformerModel=vitstr_base_patch16_224 --imgH 224 --imgW 224 --manualSeed=$RANDOM  --sensitive --batch_size 48 --num_iter 500000 --valInterval 2000 --batch_max_length=66 --saved_model vitstr_base_patch16_224_aug.pth
+
+
+
+CUDA_VISIBLE_DEVICES=0 python3 train.py --train_data data_train/Class08/db_train_resize --valid_data data_train/Class08/db_valid_resize --select_data / --batch_ratio 1 --Transformation TPS --FeatureExtraction ResNet --SequenceModeling BiLSTM --Prediction Attn --TransformerModel=vitstr_tiny_patch16_224 --imgH 32 --imgW 224 --manualSeed=$RANDOM  --sensitive --batch_size 32 --num_iter 200000 --valInterval 50 --batch_max_length=50
+
+
+
+!CUDA_VISIBLE_DEVICES=0 python3 train.py --train_data data_train/Class08/db_train \
+--valid_data data_train/Class08/db_valid \
+--Transformation None --FeatureExtraction None --SequenceModeling None --Prediction None --Transformer \
+--TransformerModel=vitstr_base_patch16_224 --imgH 224 --imgW 224 \
+--manualSeed=$RANDOM  --sensitive --select_data / --batch_ratio 1 \
+--batch_size 16 --batch_max_length=50 \
+--num_iter 300000 \
+--saved_model vitstr_base_patch16_224_aug.pth
+
+CUDA_VISIBLE_DEVICES=0 python3 train.py --train_data data_train/bienso/BiensoxeVN_full_AnhTH/db_train/ --valid_data data_train/bienso/BiensoxeVN_full_AnhTH/db_train/ --Transformation None --FeatureExtraction None --SequenceModeling None --Prediction None --Transformer --TransformerModel=vitstr_base_patch16_224 --imgH 224 --imgW 224 --manualSeed=$RANDOM  --sensitive --select_data / --batch_ratio 1 --batch_size 16 --batch_max_length=50 --num_iter 300000  --character "$0123456789ABCDEFGHIKLMNPQRSTUVXYZa" --saved_model vitstr_base_patch16_224_aug.pth
+
+!CUDA_VISIBLE_DEVICES=0 python3 train.py --train_data data_train/Class08/db_train --valid_data data_train/Class08/db_valid --Transformation None --FeatureExtraction None --SequenceModeling None --Prediction None --Transformer --TransformerModel=vitstr_base_patch16_224 --imgH 224 --imgW 224 --manualSeed=$RANDOM  --sensitive --select_data MJ-ST --batch_ratio 0.5-0.5 --batch_size 16 --batch_max_length=50 --num_iter 300000 --valInterval 100 --saved_model vitstr_base_patch16_224_aug.pth
+
+
+
+3. cách train lại model
+!CUDA_VISIBLE_DEVICES=0 python3 train.py --saved_model saved_models/a/best_accuracy.pth --train_data data_train/create_dulieu_anh_theo_so/db_train -valid_data data_train/create_dulieu_anh_theo_so/db_valid --select_data / --batch_ratio 1 --Transformation TPS --FeatureExtraction ResNet --SequenceModeling BiLSTM --Prediction Attn --TransformerModel=vitstr_tiny_patch16_224 --imgH 224 --imgW 224 --manualSeed=$RANDOM  --sensitive --batch_size 32 --num_iter 6000 --valInterval 1 --batch_max_length=50
+
+
+4. cách đề detect (qua cái model clovaai)
+!CUDA_VISIBLE_DEVICES=0 python3 demo.py --Transformation TPS --FeatureExtraction ResNet --SequenceModeling BiLSTM --Prediction Attn --image_folder detect/Class01/ --saved_model best_accuracy_300000_2100_80.pth
+
+
+
+CUDA_VISIBLE_DEVICES=0 python3 test.py --eval_data /home/vbpo/Desktop/AnhTH/roatienza_deep-text-recognition-benchmark/OCR/OCR_bien_so_xe/OCR_bien_so_xe_vitstr_base_patch16_224/Img_error/a_db --benchmark_all_eval --Transformation None --FeatureExtraction None --SequenceModeling None --Prediction None --Transformer --TransformerModel=vitstr_base_patch16_224--sensitive --data_filtering_off  --imgH 224 --imgW 224 --saved_model vitstr_base_patch16_224_aug.pth
+
+
+
+
+
+
+
+
+CUDA_VISIBLE_DEVICES=1 python3 train.py --train_data data_train/bienso/BiensoxeVN_full_AnhTH/db_train/ --valid_data data_train/bienso/BiensoxeVN_full_AnhTH/db_train/ --Transformation None --FeatureExtraction None --SequenceModeling None --Prediction None --Transformer --TransformerModel=vitstr_base_patch16_224 --imgH 224 --imgW 224 --manualSeed=$RANDOM --sensitive --select_data / --batch_ratio 1 --batch_size 64 --batch_max_length=11 --num_iter 300000 --saved_model OCR/OCR_bien_so_xe/OCR_bien_so_xe_2_dong_vitstr_base_patch16_224/OCR_bien_so_xe_2_dong_vitstr_base_patch16_224/best_valid_losss.pth
+
+
+
+CUDA_VISIBLE_DEVICES=0 python3 train.py --train_data /home/vbpo/Desktop/AnhTH/OCR/ocr_vitstr_transformer_AnhTH/data_train/SGC/HD/Class08_V1/db_train/ --valid_data /home/vbpo/Desktop/AnhTH/OCR/ocr_vitstr_transformer_AnhTH/data_train/SGC/HD/Class08_V1/db_train/ --Transformation None --FeatureExtraction None --SequenceModeling None --Prediction None --Transformer --TransformerModel=vitstr_base_patch16_224 --imgH 224 --imgW 224 --manualSeed=$RANDOM --sensitive --select_data / --batch_ratio 1 --batch_size 32 --batch_max_length=10 --num_iter 300000 --saved_model vitstr_base_patch16_224_aug.pth
+
+
+
+CUDA_VISIBLE_DEVICES=1 python3 train.py --train_data /home/vbpo/Desktop/AnhTH/OCR/ocr_vitstr_transformer_AnhTH/data_train/SGC/HD/Class08_V1/db_train/ --valid_data /home/vbpo/Desktop/AnhTH/OCR/ocr_vitstr_transformer_AnhTH/data_train/SGC/HD/Class08_V1/db_train/ --select_data / --batch_ratio 1 --Transformation TPS --FeatureExtraction ResNet --SequenceModeling BiLSTM --Prediction Attn --imgH 64 --imgW 448 --manualSeed=$RANDOM  --sensitive --batch_size 32 --num_iter 200000 --valInterval 2000 --batch_max_length 70 --saved_model /home/vbpo/Desktop/AnhTH/roatienza_deep-text-recognition-benchmark/OCR/SGC/HD_V2/Class08/Class08_V2_99701_300ke_100/best_accuracy.pth
+
+
+
+CUDA_VISIBLE_DEVICES=1 python3 train.py --train_data /home/vbpo/Desktop/AnhTH/OCR/ocr_vitstr_transformer_AnhTH/data_train/SGC/HD/Class08_V1/db_train/ --valid_data /home/vbpo/Desktop/AnhTH/OCR/ocr_vitstr_transformer_AnhTH/data_train/SGC/HD/Class08_V1/db_train/ --select_data / --batch_ratio 1 --Transformation TPS --FeatureExtraction ResNet --SequenceModeling BiLSTM --Prediction Attn --imgH 64 --imgW 448 --manualSeed=$RANDOM  --sensitive --batch_size 32 --num_iter 200000 --valInterval 2000 --batch_max_length 71 --saved_model /home/vbpo/Desktop/AnhTH/roatienza_deep-text-recognition-benchmark/OCR/SGC/HD_V2/Class08_V3/Class08_V3/best_accuracy.pth
+
+CUDA_VISIBLE_DEVICES=0 python3 train.py --train_data /home/vbpo/Desktop/AnhTH/OCR/ocr_vitstr_transformer_AnhTH/data_train/SGC/HD/Class08_V1/db_train/ --valid_data /home/vbpo/Desktop/AnhTH/OCR/ocr_vitstr_transformer_AnhTH/data_train/SGC/HD/Class08_V1/db_train/ --Transformation None --FeatureExtraction None --SequenceModeling None --Prediction None --Transformer --TransformerModel=vitstr_base_patch16_224 --imgH 224 --imgW 224 --manualSeed=$RANDOM --sensitive --select_data / --batch_ratio 1 --batch_size 32 --batch_max_length=100 --num_iter 300000 --valInterval 5000 --saved_model OCR/SGC/OCR_HD_Class08_vitstr_base_patch16_224/wieghts/best_accuracy.pth
+
+
+CUDA_VISIBLE_DEVICES=1 python3 train.py --train_data /home/vbpo/Desktop/AnhTH/OCR/ocr_vitstr_transformer_AnhTH/data_train/SGC/HD/Class08_V1/db_train/ --valid_data /home/vbpo/Desktop/AnhTH/OCR/ocr_vitstr_transformer_AnhTH/data_train/SGC/HD/Class08_V1/db_train/ --select_data / --batch_ratio 1 --Transformation TPS --FeatureExtraction ResNet --SequenceModeling BiLSTM --Prediction Attn --imgH 64 --imgW 448 --manualSeed=$RANDOM  --sensitive --batch_size 48 --num_iter 300000 --valInterval 5000 --batch_max_length 71 --saved_model /home/vbpo/Desktop/AnhTH/roatienza_deep-text-recognition-benchmark/OCR/SGC/HD_V2/Class08_V3/Class08_V3/best_valid_losss.pth
+
+
+
+CUDA_VISIBLE_DEVICES=1 python3 train.py --train_data /home/vbpo/Desktop/AnhTH/OCR/ocr_vitstr_transformer_AnhTH/data_train/SGC/HD/Class08_V1/db_train/ --valid_data /home/vbpo/Desktop/AnhTH/OCR/ocr_vitstr_transformer_AnhTH/data_train/SGC/HD/Class08_V1/db_train/ --select_data / --batch_ratio 1 --Transformation TPS --FeatureExtraction ResNet --SequenceModeling BiLSTM --Prediction Attn --imgH 64 --imgW 448 --manualSeed=$RANDOM  --sensitive --batch_size 48 --num_iter 300000 --valInterval 5000 --batch_max_length 100
+
+
+
+CUDA_VISIBLE_DEVICES=0 python3 train.py --train_data data_train/Capcha/db_train/ --valid_data data_train/Capcha/db_train/ --select_data / --batch_ratio 1 --Transformation TPS --FeatureExtraction ResNet --SequenceModeling BiLSTM --Prediction Attn --imgH 30 --imgW 100 --manualSeed=$RANDOM  --sensitive --batch_size 48 --num_iter 100000 --valInterval 2000 --batch_max_length 7 --character "2345678abcdefghklmnopqrstvwxyz"
+
+CUDA_VISIBLE_DEVICES=0 python3 train.py --train_data data_train/train_thu_chuviettay/db_train/ --valid_data data_train/train_thu_chuviettay/db_train/ --select_data / --batch_ratio 1 --Transformation TPS --FeatureExtraction ResNet --SequenceModeling BiLSTM --Prediction Attn --imgH 74 --imgW 523 --manualSeed=$RANDOM  --sensitive --batch_size 16 --num_iter 100000 --valInterval 2000 --batch_max_length 100 --character "Cuộc sốngẽhỉobạóữườiđtợàôemáảdịếấẹ.NớapvểĐởíVùệlầơ,ẫBìkrê"ủyãặqềụứâTậéăxú1òẳýĩỳũ8-3MHựỏẻổ?PÁÂÚGắ2S57Qọỗừ(60/)KIUỀỂẢOỆAồử:ẤỦÀÔDẩ"
+CUDA_VISIBLE_DEVICES=0 python3 train.py --train_data data_train/train_thu_chuviettay/db_train/ --valid_data data_train/train_thu_chuviettay/db_train/ --select_data / --batch_ratio 1 --Transformation TPS --FeatureExtraction ResNet --SequenceModeling BiLSTM --Prediction Attn --imgH 74 --imgW 523 --manualSeed=$RANDOM  --sensitive --batch_size 16 --num_iter 100000 --valInterval 2000 --batch_max_length 100 --character "Cuộc sốngẽhỉobạóữườiđtợàôemáảdịếấẹ.NớapvểĐởíVùệlầơ,ẫBìkrê"ủyãặqềụứâTậéăxú1òẳýĩỳũ8-3MHựỏẻổ?PÁÂÚGắ2S57Qọỗừ(60/)KIUỀỂẢOỆAồử:ẤỦÀÔDẩ" --saved_model "TPS-ResNet-BiLSTM-Attn.pth"
